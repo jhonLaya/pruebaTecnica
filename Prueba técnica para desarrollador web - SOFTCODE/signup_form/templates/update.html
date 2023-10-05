@@ -1,0 +1,134 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Actualiza usuario</title>
+    {% comment %} <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&family=Palanquin+Dark:wght@400;700&display=swap" rel="stylesheet"> {% endcomment %}
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <link rel="stylesheet" type="text/css" href="{% static '/css/normalize.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}">
+
+</head>
+
+<body class="update_body">
+    <div id="form_container" class="container form_container  update_temp">
+            <form action="/update/{{usr_data.id}}/" method="POST">
+                {% comment %} un poco de seguridad {% endcomment %}
+                {% csrf_token %}
+                <fieldset class="fieldset">
+                    <legend class="legend">Actualiza tu Usuario</legend>
+
+                    
+                    <label class="label_cont" for="name">Nombre</label>
+                    <div class="input_cont">
+                        <input type="text" name="name" id="name" placeholder="Introduce tu Nombre" value={{ usr_data.name }}>
+                    </div>
+
+                    <label class="label_cont" for="last_name">Apellido</label>
+                    <div class="input_cont">
+                        <input type="text" name="last_name" id="last_name" placeholder="Introduce tu Apellido" value={{ usr_data.apellido }}>
+                    </div>
+                    
+                    <label class="label_cont" for="email">Correo Electronico</label>
+                    <div class="input_cont">
+                        <input type="email" name="email" id="email" placeholder="introduce tu Email" value={{ usr_data.email }}>
+                    </div>
+
+                    <label class="label_cont" for="passwd">Contraseña</label>
+                    <div class=" campo input_cont">
+                        <input type="password" name="passwd" id="passwd" placeholder="Introduce tu Contraseña" value={{ usr_data.password }}>
+                    </div>
+                    <div class="submit_btn" >
+                        <button id="submit_btn" type="submit">Registrarme</button>
+                    </div>
+                </fieldset>
+            </form>
+        </div><!-- <div class="form_cont"> -->
+    </div> <!-- <div class="container form_container"> --> 
+    <div class="container-alert form_cont"></div>
+    <script src="{%static 'js/scripts.js'%}"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+        const form = document.querySelector("form");
+
+            form.addEventListener("submit", function (event) {
+                event.preventDefault();
+
+            // obtenemos todos los formularios que vamos a validar
+            let name = document.querySelector("#name")
+            let last_name = document.querySelector("#last_name")
+            let email = document.querySelector("#email")
+            let password_1 = document.querySelector("#passwd")
+            
+        
+            // valida el formulario nombre
+            let name_valor = name.value
+            if(name_valor.length <= 3 || name_valor === ""){
+                alerta("El Nombre debe tener mas de 3 caracteres")
+                return false
+            }
+
+            
+            // valida el formulario apellido
+            let last_name_valor = last_name.value
+            if(last_name_valor.length <= 3 || last_name_valor === ""){
+                alerta("El Apellido debe tener mas de 3 caracteres")
+                return false 
+            }
+            
+            //valida el formulario email
+            let email_valor = email.value
+            let regex = /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i            
+            if(!regex.test(email_valor)){
+                alerta("Correo Electronico Invalido")
+                return false
+            }
+            // valida el formulario password
+            let password = password_1.value
+            if (password.length < 8) {
+                alerta("la contraseña es muy corta de medir mas 8 caracteres")
+                return false
+
+                }
+            
+            // Verifica que la contraseña tenga al menos una letra mayúscula
+            if (!/[A-Z]/g.test(password)) {
+                alerta("la contraseña debe tener al menos una letra mayúscula")
+                return false
+
+            }
+            
+            // Verifica que la contraseña tenga al menos una letra minúscula
+            if (!/[a-z]/g.test(password)) {
+                alerta("la contraseña debe tener al menos una letra minuscula")
+                return false
+
+            }
+        
+            // Verifica que la contraseña tenga al menos un número
+            if (!/[0-9]/g.test(password)) {
+                alerta("la contraseña debe tener al menos un numero")
+                return false
+
+            }
+        
+            // Verifica que la contraseña tenga al menos un carácter especial
+            if (!/[!@#$%^&*()_+{}|:<>?~`-]/g.test(password)) {
+                alerta("la contraseña debe tener al menos un carácter especial")
+                return false
+
+            }
+            if(password === ""){
+                alerta("Tu Contraseña no puede estar vacia ")
+                return false
+            }
+
+            // Si todos los campos son válidos, puedes enviar el formulario aquí
+            form.submit();
+        });
+    });
+</body>
